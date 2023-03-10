@@ -6,7 +6,6 @@ from prophet import Prophet
 # 读取历史数据
 df = pd.read_csv('D:/data/inventory/inventory2020.csv')
 
-
 # 转换数据格式
 df['ds'] = pd.to_datetime(df['date'])
 df['y'] = df['demand']
@@ -23,8 +22,4 @@ future = model.make_future_dataframe(periods=7)
 forecast = model.predict(future)
 
 # 查看预测结果
-print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7))
-
-# 绘制预测图表
-model.plot(forecast)
-model.plot_components(forecast)
+forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7)
