@@ -2,6 +2,7 @@
 # 导入模块
 import pandas as pd
 from prophet import Prophet
+import matplotlib.pyplot as plt
 
 # 读取历史数据
 df = pd.read_csv('D:/data/inventory/inventory2020.csv')
@@ -28,3 +29,4 @@ print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7))
 # 绘制预测图表
 model.plot(forecast)
 model.plot_components(forecast)
+plt.show()
