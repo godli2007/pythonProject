@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import numpy as np
+import matplotlib.pyplot as plt
 
 # 假定限定条件如下
 n_items = 10  # 运送货物种类
@@ -105,3 +106,5 @@ for v in range(n_vehicles):
         print(f"装载货物号(从0数): {grouped_items[v]}")
         total_cost += cost
 print(f"总成本: {total_cost}")
+
+plt.show()
