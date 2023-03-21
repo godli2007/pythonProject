@@ -50,6 +50,7 @@ model.fit(df)
 
 # 创建未来日期
 future = model.make_future_dataframe(periods=30)
+# future['floor'] = 0
 
 # 生成预测结果
 forecast = model.predict(future)
@@ -64,9 +65,9 @@ print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(30))
 
 # 绘制预测图表
 fig = model.plot(forecast)
-# 观测值：时间序列的历史数据，用黑色点表示。
-# 预测值：时间序列的未来数据，用蓝色线表示。
-# 置信区间：预测值的不确定性范围，用蓝色阴影区域表示
+# 观测值demand：时间序列的历史数据，用黑色点表示。
+# 预测值yhat：时间序列的未来数据，用蓝色线表示。
+# 置信区间yhat_lower\yhat_upper：预测值的不确定性范围，用蓝色阴影区域表示
 fig = model.plot_components(forecast)
 # 趋势trends：反映了时间序列的长期变化，可以是线性、对数或平坦的。
 # 节假日holidays：反映了特定日期或时间段对时间序列的影响，可以是固定或可变的。
@@ -99,7 +100,7 @@ fig = plot_cross_validation_metric(df_cv, metric='mae')
 fig = plot_cross_validation_metric(df_cv, metric='mdape')
 fig = plot_cross_validation_metric(df_cv, metric='smape')
 fig = plot_cross_validation_metric(df_cv, metric='coverage')
-plt.show()
+# plt.show()
 
 # mse：均方误差，即真实值和预测值之差平方后求平均，反映了误差大小和方向。
 # rmse：均方根误差，即mse开平方根，反映了误差大小和方向，并且与原始数据单位一致。
