@@ -13,7 +13,7 @@ holidays = pd.DataFrame({
     'holiday': ['春节', '清明节', '劳动节', '端午节', '中秋节', '国庆节'],
     'ds': pd.to_datetime(['2020-01-25', '2020-04-04', '2020-05-01', '2020-06-25',
                           '2020-10-01', '2020-10-01',
-                           # 其他年份的日期
+                          # 其他年份的日期
                           ]),
     # 增加持续时间（以天为单位）
     # 如果不指定，默认为1天
@@ -33,9 +33,8 @@ holidays = pd.DataFrame({
     # 'country': ['CN','CN','CN','CN','CN','CN']
 })
 
-
-    # 读取历史数据
-df = pd.read_csv('D:/data/inventory/L220_inventory2020-2022.csv')
+# 读取历史数据
+df = pd.read_csv('L220_inventory2020-2022.csv')
 
 # 转换数据格式
 df['ds'] = pd.to_datetime(df['date'])
@@ -48,7 +47,6 @@ df = df[['ds', 'y']]
 
 model = Prophet(seasonality_mode='multiplicative', n_changepoints=50, holidays=holidays)
 model.fit(df)
-
 
 # 创建未来日期
 future = model.make_future_dataframe(periods=30)
@@ -65,8 +63,14 @@ print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(30))
 # yhat_upper：预测值的上界
 
 # 绘制预测图表
-fig1 = model.plot(forecast)
-fig2 = model.plot_components(forecast)
+fig = model.plot(forecast)
+# 观测值：时间序列的历史数据，用黑色点表示。
+# 预测值：时间序列的未来数据，用蓝色线表示。
+# 置信区间：预测值的不确定性范围，用蓝色阴影区域表示
+fig = model.plot_components(forecast)
+# 趋势trends：反映了时间序列的长期变化，可以是线性、对数或平坦的。
+# 节假日holidays：反映了特定日期或时间段对时间序列的影响，可以是固定或可变的。
+# 周期性yearly\weekly：反映了时间序列在不同时间尺度上的重复模式，例如周、月、年等。
 plt.show()
 
 # 进行交叉验证
@@ -89,10 +93,19 @@ df_p = performance_metrics(df_cv)
 print(df_p.head())
 
 # 绘制预测值和真实值的对比图
-fig3 = plot_cross_validation_metric(df_cv, metric='mse')
-fig4 = plot_cross_validation_metric(df_cv, metric='rmse')
-fig5 = plot_cross_validation_metric(df_cv, metric='mae')
-fig6 = plot_cross_validation_metric(df_cv, metric='mdape')
-fig7 = plot_cross_validation_metric(df_cv, metric='smape')
-fig8 = plot_cross_validation_metric(df_cv, metric='coverage')
+fig = plot_cross_validation_metric(df_cv, metric='mse')
+fig = plot_cross_validation_metric(df_cv, metric='rmse')
+fig = plot_cross_validation_metric(df_cv, metric='mae')
+fig = plot_cross_validation_metric(df_cv, metric='mdape')
+fig = plot_cross_validation_metric(df_cv, metric='smape')
+fig = plot_cross_validation_metric(df_cv, metric='coverage')
 plt.show()
+
+# mse：均方误差，即真实值和预测值之差平方后求平均，反映了误差大小和方向。
+# rmse：均方根误差，即mse开平方根，反映了误差大小和方向，并且与原始数据单位一致。
+# mae：平均绝对误差，即真实值和预测值之差绝对值后求平均，反映了误差大小而不考虑方向。
+# mdape：中位数绝对百分比误差，即真实值和预测值之比减去一再取绝对值后求中位数，反映了相对误差水平而不考虑方向。
+# smape：对称平均绝对百分比误差，即真实值和预测值之差除以它们两者平均后取绝对值再求平均，反映了相对误差水平而不考虑方向，并且避免了零除问题。
+# coverage：置信区间覆盖率，即真实值落在置信区间内的比例，反映了置信区间是否合理地捕捉了真实变化范围。
+
+# 通常来说，在选择评价指标时要考虑你关心什么样的错误特征。例如如果你想要惩罚大错误而不是小错误，则可以选择mse或rmse；如果你想要忽略错误符号而只关心错误幅度，则可以选择mae或mdape；如果你想要把错误归一化到原始数据范围，则可以选择smape等等。
