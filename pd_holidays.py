@@ -43,20 +43,21 @@ df['y'] = df['demand']
 df = df[['ds', 'y']]
 
 # 创建并训练模型
-# changepoint_prior_scale: 这个参数控制了趋势变化点的灵敏度，值越大，拟合的跟随性越好，可能会过拟合
+# seasonality_mode: 季节模型方式，'additive'(加法模型) (默认) 或者 'multiplicative'（乘法模型）
+# 加法季节性意味着季节性的影响是和趋势相加得到预测值，这适用于季节性变化相对稳定的情况。乘法季节性意味着季节性的影响是和趋势相乘得到预测值，这适用于季节性变化随着趋势增长而增大的情况。
 
 model = Prophet(seasonality_mode='multiplicative', n_changepoints=50, holidays=holidays)
 model.fit(df)
-# , holidays=holidays
+
 
 # 创建未来日期
-future = model.make_future_dataframe(periods=7)
+future = model.make_future_dataframe(periods=30)
 
 # 生成预测结果
 forecast = model.predict(future)
 
 # 查看预测结果
-print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7))
+print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(30))
 
 # ds：时间序列的时间戳
 # yhat：时间序列的预测值
@@ -69,6 +70,10 @@ fig2 = model.plot_components(forecast)
 plt.show()
 
 # 进行交叉验证
+# model: model是已经训练的Prophet模型
+# horizon: horizon是每次预测所使用的数据的时间长度，比如‘30d’（30天）
+# period：period是触发预测动作的时间周期。如果设置为‘7d’，01-07、01-14、01-21等等，而这些预测的数据为前面定义的horizon。这个值的默认值为horizon*0.5
+# Initial：整个交叉验证的数据范围，结束点是昨天的点，开始点是（昨天-initial)，initial的默认值是3*horizon。当然同学们也可根据实际情况手动设置，比如“110d”。
 df_cv = cross_validation(model, initial='365.25 days', period='30 days', horizon='90 days')
 
 # 查看交叉验证结果
