@@ -50,10 +50,12 @@ model.fit(df)
 
 # 创建未来日期
 future = model.make_future_dataframe(periods=30)
-# future['floor'] = 0
 
 # 生成预测结果
 forecast = model.predict(future)
+
+# 把所有小于0的预测值设置为0
+forecast.loc[forecast['yhat'] < 0, 'yhat'] = 0
 
 # 查看预测结果
 print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(30))
