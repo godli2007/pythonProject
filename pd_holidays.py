@@ -80,7 +80,7 @@ plt.show()
 # model: model是已经训练的Prophet模型
 # horizon: horizon是每次预测所使用的数据的时间长度，比如‘30d’（30天）
 # period：period是触发预测动作的时间周期。如果设置为‘7d’，01-07、01-14、01-21等等，而这些预测的数据为前面定义的horizon。这个值的默认值为horizon*0.5
-# Initial：整个交叉验证的数据范围，结束点是昨天的点，开始点是（昨天-initial)，initial的默认值是3*horizon。当然同学们也可根据实际情况手动设置，比如“110d”。
+# Initial：整个交叉验证的数据范围，结束点是昨天的点，开始点是（昨天-initial)，initial的默认值是3*horizon。当然也可根据实际情况手动设置，比如“110d”。
 df_cv = cross_validation(model, initial='365.25 days', period='30 days', horizon='90 days')
 
 # 查看交叉验证结果
@@ -102,7 +102,7 @@ fig = plot_cross_validation_metric(df_cv, metric='mae')
 fig = plot_cross_validation_metric(df_cv, metric='mdape')
 fig = plot_cross_validation_metric(df_cv, metric='smape')
 fig = plot_cross_validation_metric(df_cv, metric='coverage')
-# plt.show()
+plt.show()
 
 # mse：均方误差，即真实值和预测值之差平方后求平均，反映了误差大小和方向。
 # rmse：均方根误差，即mse开平方根，反映了误差大小和方向，并且与原始数据单位一致。
